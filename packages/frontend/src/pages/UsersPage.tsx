@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { AuditLogAction, User, UserRole } from "../types";
-import { mockUsers } from "../data";
 import { ROLE_COLORS, STATUS_COLORS } from "../constants";
-import { Plus, Search, ChevronDown, Edit, Trash2, Power } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import Modal from "../components/ui/Modal";
 import { apiService, auditLogService, useToast } from "../App";
 
@@ -51,7 +50,8 @@ const CreateUserModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   onUserCreated: () => void;
-}> = ({ isOpen, onClose, onUserCreated }) => {
+  mockUsers: User[];
+}> = ({ isOpen, onClose, onUserCreated, mockUsers }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     role: "Support Agent" as UserRole,
@@ -316,7 +316,8 @@ const EditUserModal: React.FC<{
   onClose: () => void;
   user: User | null;
   onUserUpdated: () => void;
-}> = ({ isOpen, onClose, user, onUserUpdated }) => {
+  mockUsers: User[];
+}> = ({ isOpen, onClose, user, onUserUpdated, mockUsers }) => {
   const [formData, setFormData] = useState<Partial<User>>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -606,7 +607,9 @@ const UsersPage: React.FC = () => {
         // Audit log
         await auditLogService.logAction(
           AuditLogAction.USER_STATUS_UPDATE,
-          `Changed user ${selectedUserForAction?.name} status to ${actionType === "activate" ? "Active" : "Inactive"}`,
+          `Changed user ${selectedUserForAction?.name} status to ${
+            actionType === "activate" ? "Active" : "Inactive"
+          }`,
           {
             userId: selectedUserForAction.id,
             userName: selectedUserForAction?.name,
@@ -689,12 +692,14 @@ const UsersPage: React.FC = () => {
         isOpen={isCreateModalOpen}
         onClose={() => setCreateModalOpen(false)}
         onUserCreated={loadUsers}
+        mockUsers={users}
       />
       <EditUserModal
         isOpen={isEditModalOpen}
         onClose={() => setEditModalOpen(false)}
         user={selectedUser}
         onUserUpdated={loadUsers}
+        mockUsers={users}
       />
       {modalConfig && (
         <ConfirmationModal
