@@ -1,6 +1,6 @@
 // utils/ticketUtils.ts
+import { apiService } from "../App";
 import { Ticket, User } from "../types";
-import { mockUsers } from "../data";
 
 // Utility functions to handle User type conversions
 export const getUserName = (user: User | string | null): string => {
@@ -9,9 +9,12 @@ export const getUserName = (user: User | string | null): string => {
   return user.name;
 };
 
-export const getUserObject = (user: User | string | null): User | null => {
+export const getUserObject = async (
+  user: User | string | null
+): Promise<User | null> => {
   if (!user) return null;
   if (typeof user === "string") {
+    const mockUsers = await apiService.getUsers();
     // Find user by name in mockUsers
     return mockUsers.find((u) => u.name === user) || null;
   }
@@ -19,6 +22,7 @@ export const getUserObject = (user: User | string | null): User | null => {
 };
 
 export const normalizeTicket = (ticket: any): Ticket => {
+  const mockUsers = apiService.getUsers();
   return {
     ...ticket,
     createdBy:
