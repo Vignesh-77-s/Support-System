@@ -1,0 +1,26 @@
+{
+  "name": "neokred-support-portal-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/frontend",
+    "packages/backend"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm run install --workspaces --if-present",
+    "dev:frontend": "echo 'Please run a local dev server for the frontend package (e.g., using Vite)'",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev": "concurrently \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\"",
+    "start": "npm run start --workspace=backend",
+    "clean-start": "rm -rf node_modules/.cache && npm start",
+    "fresh-start": "rm -rf node_modules/.cache && rm -rf node_modules && npm install && npm start",
+    "hard-reset": "git clean -fdx && npm install && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.5",
+    "@vitejs/plugin-react": "^5.1.1"
+  }
+}
